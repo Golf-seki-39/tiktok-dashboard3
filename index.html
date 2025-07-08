@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクティブTikTokゴルフ戦略ガイド</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Stone, Slate, Amber) -->
+    <!-- Application Structure Plan: The SPA is designed as an interactive "Creator's Dashboard" with tab-based navigation (Home, Viral Strategy, Content Creation, Persona Design, Script Builder). This task-oriented structure breaks down the dense report into actionable, explorable modules, moving beyond the original linear format. The goal is to guide the user through a logical workflow from high-level strategy to specific script creation, making the information more engaging and practical. The centerpiece is the interactive "Script Builder" which allows users to apply the report's concepts directly. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Method -> Interaction -> Justification. 1. Overall Strategy -> Inform -> Donut Chart (Chart.js) -> Static display -> Provides a quick, visual summary of key success factors on the dashboard. 2. Persona Types -> Compare -> Bar Chart (Chart.js) + Interactive Cards (HTML/CSS/JS) -> Click cards to update chart/text -> Allows users to easily compare persona characteristics and see detailed descriptions. 3. Vlog Structure -> Organize -> Interactive Timeline (HTML/CSS/JS) -> Click steps to reveal info -> Transforms a linear text description into a more engaging, step-by-step exploration of the storytelling format. 4. Script Blueprints -> Apply -> Dynamic Content Generation (JS) -> User selects theme, JS builds script -> This is the core interactive tool, turning passive reading of scripts into an active creation process, which is the ultimate goal for the user. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .nav-link {
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            border-bottom-color: #f59e0b; /* amber-500 */
+            color: #1e293b; /* slate-800 */
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-button.active {
+            background-color: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">TikTokゴルフ動画 成功戦略ダッシュボード</h1>
+            <p class="text-slate-500">1万再生を超えるレビュー動画制作のためのインタラクティブガイド</p>
+        </header>
+
+        <nav class="mb-8 border-b border-slate-200">
+            <ul class="flex justify-center flex-wrap space-x-4 md:space-x-8 -mb-px">
+                <li><a href="#home" class="nav-link inline-block p-4 text-slate-500 font-medium">ダッシュボード</a></li>
+                <li><a href="#viral" class="nav-link inline-block p-4 text-slate-500 font-medium">バイラル戦略</a></li>
+                <li><a href="#content" class="nav-link inline-block p-4 text-slate-500 font-medium">コンテンツ制作</a></li>
+                <li><a href="#persona" class="nav-link inline-block p-4 text-slate-500 font-medium">ペルソナ設計</a></li>
+                <li><a href="#builder" class="nav-link inline-block p-4 text-slate-500 font-medium">台本ビルダー</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Section: Home -->
+            <section id="home" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">ようこそ、未来のゴルフインフルエンサーへ</h2>
+                    <p class="mb-4">このダッシュボードは、あなたのゴルフ施設レビュー動画を「バズる」コンテンツへと昇華させるための戦略拠点です。TikTokでは、単に良い施設を紹介するだけでは不十分です。視聴者の心を一瞬で掴み、共感を呼び、そしてあなた自身のファンになってもらうための「設計図」が必要です。上のナビゲーションから各戦略を探求し、1万再生の壁を突破しましょう。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">成功する動画の構成要素</h3>
+                        <p class="text-sm text-slate-500 mb-4 text-center">成功する動画は、これらの要素が絶妙なバランスで組み合わさっています。特に「物語」と「ペルソナ」がコンテンツの核となります。</p>
+                        <div class="chart-container max-w-sm">
+                            <canvas id="successComponentsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="font-bold text-lg text-slate-800 mb-2">📈 バイラル戦略</h3>
+                            <p class="text-slate-600 text-sm">最初の3秒で視聴者の指を止めさせ、アルゴリズムに愛されるためのテクニックを学びます。</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="font-bold text-lg text-slate-800 mb-2">🎬 コンテンツ制作</h3>
+                            <p class="text-slate-600 text-sm">視聴者が感情移入する「物語」の作り方と、プロ級の映像をスマホで撮影する技術を解説します。</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="font-bold text-lg text-slate-800 mb-2">🎭 ペルソナ設計</h3>
+                            <p class="text-slate-600 text-sm">「誰が」発信するかが重要な時代。ファンを魅了する一貫したキャラクター設定の方法を探ります。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Viral Strategy -->
+            <section id="viral" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">バイラル戦略：アルゴリズムを味方につける</h2>
+                    <p class="mb-4">TikTokは最初の数秒が全て。視聴者の興味を引き、エンゲージメントを高めることで、アルゴリズムがあなたの動画を「おすすめ」に表示してくれます。ここでは、そのための具体的な戦術を学びます。</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">視聴者の心を掴む「冒頭3秒」の法則</h3>
+                    <div class="grid md:grid-cols-3 gap-6 text-center">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-amber-400">
+                            <div class="text-4xl mb-2">✨</div>
+                            <h4 class="font-bold text-lg mb-2">視覚的インパクト</h4>
+                            <p class="text-sm text-slate-600">息をのむような絶景、美しいクラブハウス、洗練されたギアのクローズアップなど、一目で「すごい」と思わせる映像で視聴者の指を止めます。</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-amber-400">
+                            <div class="text-4xl mb-2">⚡️</div>
+                            <h4 class="font-bold text-lg mb-2">アクションと期待感</h4>
+                            <p class="text-sm text-slate-600">美しいフィニッシュの瞬間や、「この後、衝撃の展開が！」のような問いかけで、「続きが見たい」と思わせる期待感を醸成します。</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-amber-400">
+                            <div class="text-4xl mb-2">🤯</div>
+                            <h4 class="font-bold text-lg mb-2">意外性とギャップ</h4>
+                            <p class="text-sm text-slate-600">「豪華な施設なのに、コースは地獄！？」のような期待と現実のギャップは、コメントやシェアを誘発し、エンゲージメントを高めます。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">戦略的ハッシュタグ・マトリクス</h3>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <p class="text-sm text-center text-slate-500 mb-6">動画の内容に合わせて、これらのカテゴリーからバランス良くハッシュタグを選ぶことで、より多くの視聴者にリーチできます。</p>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <h5 class="font-bold">広範</h5>
+                                <p class="text-xs text-slate-600 mt-1">#ゴルフ #golf</p>
+                            </div>
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <h5 class="font-bold">コミュニティ</h5>
+                                <p class="text-xs text-slate-600 mt-1">#ゴルフ女子 #ゴルフ初心者</p>
+                            </div>
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <h5 class="font-bold">内容特化</h5>
+                                <p class="text-xs text-slate-600 mt-1">#ゴルフ場紹介 #ゴルフ飯</p>
+                            </div>
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <h5 class="font-bold">ロケーション</h5>
+                                <p class="text-xs text-slate-600 mt-1">#千葉ゴルフ #兵庫ゴルフ</p>
+                            </div>
+                             <div class="p-4 bg-slate-100 rounded-lg">
+                                <h5 class="font-bold">ブランド/ギア</h5>
+                                <p class="text-xs text-slate-600 mt-1">#キャロウェイ #テーラーメイド</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Content -->
+            <section id="content" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">コンテンツ制作：物語と映像美</h2>
+                    <p class="mb-4">優れたレビュー動画は、単なる施設案内ではありません。クリエイター自身の体験を通した「物語」です。ここでは、その物語の作り方と、それを支える撮影技術を探求します。</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 text-center">Vlog形式レビューの黄金律（インタラクティブ・タイムライン）</h3>
+                    <p class="text-sm text-center text-slate-500 mb-6">各ステップをクリックして、詳細なアクションを確認しましょう。</p>
+                    <div class="relative">
+                        <!-- The line -->
+                        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-200" style="transform: translateX(-50%);"></div>
+                        <!-- Timeline items -->
+                        <div id="timeline-container" class="space-y-12"></div>
+                    </div>
+                    <div id="timeline-details" class="mt-8 bg-white p-6 rounded-lg shadow-inner min-h-[150px] border border-slate-200">
+                        <p class="text-slate-500">上のタイムラインのステップをクリックすると、ここに詳細が表示されます。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Persona -->
+            <section id="persona" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">ペルソナ設計：共感と憧れのバランス</h2>
+                    <p class="mb-4">TikTokでは「誰が」発信しているかが非常に重要です。自分に合ったペルソナ（キャラクター）を確立し、一貫した視点でレビューを行うことで、視聴者はあなたを信頼し、ファンになります。下のカードをクリックして、各ペルソナの特徴を比較してみましょう。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <div id="persona-cards" class="grid grid-cols-2 gap-4"></div>
+                        <div id="persona-details" class="mt-4 bg-white p-6 rounded-lg shadow-inner border border-slate-200">
+                            <h3 id="persona-detail-title" class="font-bold text-lg text-slate-800 mb-2">ペルソナを選択してください</h3>
+                            <p id="persona-detail-description" class="text-sm text-slate-600">各ペルソナの詳しい説明と、レビューで重視すべきポイントが表示されます。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">ペルソナ別 評価軸比較</h3>
+                        <div class="chart-container max-w-md">
+                            <canvas id="personaFocusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Builder -->
+            <section id="builder" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">インタラクティブ台本ビルダー</h2>
+                    <p class="mb-4">ここまでの学びを活かして、あなただけの動画台本の骨子を作成しましょう。作りたい動画のテーマを選ぶと、成功パターンに基づいた台本のテンプレートが自動生成されます。</p>
+                </div>
+                <div class="text-center mb-6">
+                    <div id="script-theme-buttons" class="inline-flex rounded-md shadow-sm" role="group">
+                        <button type="button" data-theme="resort" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-l-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">
+                            ✨ 絶景リゾート編
+                        </button>
+                        <button type="button" data-theme="competitive" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border-t border-b border-slate-200 hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">
+                            🔥 共感ガチラウンド編
+                        </button>
+                        <button type="button" data-theme="gourmet" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-r-md hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">
+                            🍽️ ゴルフ飯特化編
+                        </button>
+                    </div>
+                </div>
+
+                <div id="script-output" class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 min-h-[300px]">
+                     <div class="text-center text-slate-500 py-12">
+                        <p>作りたい動画のテーマを選択してください。</p>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.content-section');
+
+    const data = {
+        timeline: [
+            { time: "0-6秒", title: "導入", details: "「はいどうも、〇〇です！」と元気な挨拶からスタート。今日訪れているゴルフ場の名前と場所を簡潔に伝えます。視聴者が一瞬で動画のテーマを理解できるようにすることが目的です。", icon: "👋" },
+            { time: "7-20秒", title: "展開", details: "クラブハウス、練習場、コースの第一印象など、施設の主要な特徴をテンポ良く見せます。良い点だけでなく、「練習場は少し狭いかも」といった正直な感想も加えることで、レビューの信頼性が増します。", icon: "🏢" },
+            { time: "21-45秒", title: "深掘り", details: "ゴルフ以外のライフスタイル要素（ランチ、お風呂など）や、自身のプレー（ナイスショットとミスショットの両方）を見せることで、コンテンツに深みと共感が生まれます。人間味を見せることがファン獲得の鍵です。", icon: "⛳️" },
+            { time: "46-60秒", title: "結び", details: "コースの総評を簡潔にまとめ、「また来たい！」といったポジティブな感想で締めくくります。最後に「皆さんの好きなゴルフ場は？」と問いかけ、コメントを促すことでエンゲージメントを高めます。", icon: "👍" }
+        ],
+        personas: [
+            { id: "joshi", name: "ゴルフ女子", emoji: "💃", description: "ファッション性や楽しむ姿を重視。同性からの共感と憧れを集める。レビューでは写真映えするスポットやランチ、ウェアとの相性などが高評価ポイントに。", focus: [9, 6, 8, 4] },
+            { id: "enjoy", name: "エンジョイ派", emoji: "😄", description: "スコアよりも仲間との楽しい時間や景色の美しさを重視。ポジティブな雰囲気が魅力。レビューではコースの美しさ、食事、スタッフの対応などが評価軸。", focus: [5, 9, 9, 3] },
+            { id: "gachi", name: "ガチ勢", emoji: "🔥", description: "競技としてゴルフに真剣に取り組む姿を見せる。コースの戦略性や難易度を分析。レビューではコースメンテナンス、グリーンの速さ、練習施設の充実度が重要。", focus: [4, 5, 6, 10] },
+            { id: "beginner", name: "初心者", emoji: "🔰", description: "自身の成長記録や、あるあるな失敗談で共感を集める。レビューではコースの広さ（OBの出にくさ）、料金、スタッフの親切さなどが評価ポイントになる。", focus: [7, 8, 4, 6] }
+        ],
+        scripts: {
+            resort: {
+                title: "台本：憧れの絶景リゾート編",
+                steps: [
+                    { time: "0-3秒", hook: "【絶景すぎ注意】ここは本当に日本…？", visual: "高台からコースを見下ろす壮大なワイドショット（スローモーション）。", audio: "感動的なオーケストラ曲。" },
+                    { time: "4-15秒", develop: "豪華なロビー、景色抜群の練習場。", visual: "クラブハウスに歩いて入るFPV。練習場で青空に吸い込まれるボール。", audio: "ナレーション「ずっと来たかった天空のリゾート、〇〇へ」" },
+                    { time: "16-35秒", deep: "名物ホールでのプレーとリラックス。", visual: "ダイナミックな谷越えショット。カートパスで景色を眺める友人との談笑シーン。", audio: "ナレーション「この景色に向かって打つのは最高！」" },
+                    { time: "36-52秒", lifestyle: "極上ランチと夕景。", visual: "テラス席での美しいランチのクローズアップ。夕日に染まるコースを背景にした満足げな表情。", audio: "ナレーション「プレー後のランチも格別…」" },
+                    { time: "53-60秒", close: "施設情報と行動喚起。", visual: "施設名、場所、料金のテロップ。最後に笑顔で手を振る。", audio: "ナレーション「特別な一日を過ごしたい人におすすめ！みんなの憧れのゴルフ場も教えてね！」" }
+                ]
+            },
+            competitive: {
+                title: "台本：共感のガチラウンド編",
+                steps: [
+                    { time: "0-3秒", hook: "【悲報】今日、終わりました。", visual: "深いバンカーで頭を抱える姿。", audio: "音声「うわ、最悪だ…」＋絶望的な効果音。" },
+                    { time: "4-16秒", develop: "意気込みと厳しい現実。", visual: "朝のクラブハウス前で意気込む→極端に狭いホールのティーショット。", audio: "ナレーション「自己ベスト更新目指します！…のはずだった。」＋緊張感のあるBGM。" },
+                    { time: "17-35秒", deep: "天国と地獄。", visual: "完璧なドライバーショットでガッツポーズ→冒頭のバンカーシーンで大苦戦。", audio: "ナレーション「この快感がたまらない！…からの、名物アリ地獄バンカー。」" },
+                    { time: "36-45秒", lifestyle: "ラウンド後の静かな反省。", visual: "練習グリーンで黙々とパター練習。少し悔しそうな表情。", audio: "エモーショナルな楽曲。" },
+                    { time: "53-60秒", close: "結果とリベンジの誓い。", visual: "スコアカード「92」を映す。コースに向かって一礼。", audio: "ナレーション「結果は悔しい！でも自己ベストは更新！絶対また来る！皆さんの苦手なコースは？」" }
+                ]
+            },
+            gourmet: {
+                title: "台本：発見のテーマ特化編（ゴルフ場ランチ巡り）",
+                steps: [
+                    { time: "0-3秒", hook: "ここ、ゴルフ場です。信じられる？", visual: "熱々の鉄板ハンバーグにナイフを入れるドアップ。溢れ出す肉汁。", audio: "ジュージューというシズル音。" },
+                    { time: "4-20秒", develop: "ランチ天国へようこそ。", visual: "メニューを広げて悩む→運ばれてくる複数の名物料理をテンポよく見せる。", audio: "ナレーション「ランチが神レベルと噂の〇〇へ！」＋クッキング番組風BGM。" },
+                    { time: "21-35秒", deep: "実食！至福のリアクション。", visual: "各料理を一口食べ、満面の笑みで「おいしい！」とリアクションする様子を連続で見せる。", audio: "ナレーション「このカツ分厚すぎ！」「お刺身プリップリ！」" },
+                    { time: "36-45秒", lifestyle: "〆のデザートは別腹。", visual: "美しいデザートを食べるシーン。プレーの疲れが癒される表情。", audio: "ナレーション「デザートまで手抜きなし。染みる〜」" },
+                    { time: "53-60秒", close: "MVP発表と評価。", visual: "一番おすすめのメニューを指差す。ランチ評価を星5段階で表示。", audio: "ナレーション「ここのランチのためだけに来る価値アリ！みんなの“ゴルフ飯”おすすめ教えて！」" }
+                ]
+            }
+        }
+    };
+    
+    function updateView(hash) {
+        let activeHash = hash || window.location.hash || '#home';
+        if (activeHash.length <= 1) activeHash = '#home';
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === activeHash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        sections.forEach(section => {
+            if ('#' + section.id === activeHash) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+
+        // Initialize components if they are in the active view
+        if (activeHash === '#home' && !window.successChart) initSuccessChart();
+        if (activeHash === '#content' && !window.timelineInitialized) initTimeline();
+        if (activeHash === '#persona' && !window.personaInitialized) initPersonaSection();
+        if (activeHash === '#builder' && !window.builderInitialized) initBuilder();
+
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const hash = e.target.getAttribute('href');
+            history.pushState(null, null, hash);
+            updateView(hash);
+        });
+    });
+
+    window.addEventListener('popstate', () => updateView());
+
+    function initSuccessChart() {
+        const ctx = document.getElementById('successComponentsChart').getContext('2d');
+        window.successChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['物語 (コンテンツ)', 'ペルソナ (共感)', 'フック (冒頭3秒)', '戦略 (アルゴリズム)'],
+                datasets: [{
+                    label: '成功の構成要素',
+                    data: [45, 30, 15, 10],
+                    backgroundColor: ['#f59e0b', '#fbbf24', '#fcd34d', '#fef3c7'],
+                    borderColor: '#f8fafc',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function initTimeline() {
+        const container = document.getElementById('timeline-container');
+        const detailsContainer = document.getElementById('timeline-details');
+        
+        data.timeline.forEach((item, index) => {
+            const isLeft = index % 2 === 0;
+            const timelineItem = document.createElement('div');
+            timelineItem.className = `timeline-item relative flex items-center ${isLeft ? 'justify-start' : 'justify-end'}`;
+            timelineItem.innerHTML = `
+                <div class="w-5/12">
+                    <div data-index="${index}" class="timeline-card cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 ${isLeft ? 'text-right' : 'text-left'}">
+                        <p class="font-bold text-amber-600">${item.time}</p>
+                        <h5 class="font-bold text-slate-800">${item.title}</h5>
+                    </div>
+                </div>
+                <div class="absolute left-1/2 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center text-white font-bold" style="transform: translateX(-50%);">${item.icon}</div>
+            `;
+            container.appendChild(timelineItem);
+        });
+
+        container.addEventListener('click', (e) => {
+            const card = e.target.closest('.timeline-card');
+            if (card) {
+                const index = card.dataset.index;
+                const item = data.timeline[index];
+                detailsContainer.innerHTML = `
+                    <h4 class="font-bold text-lg text-slate-800 mb-2">${item.title} (${item.time})</h4>
+                    <p class="text-slate-600">${item.details}</p>
+                `;
+            }
+        });
+        window.timelineInitialized = true;
+    }
+
+    let personaChart;
+    function initPersonaSection() {
+        const cardsContainer = document.getElementById('persona-cards');
+        data.personas.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'persona-card cursor-pointer p-4 bg-white rounded-lg shadow-sm text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300';
+            card.dataset.id = p.id;
+            card.innerHTML = `<div class="text-4xl mb-2">${p.emoji}</div><h4 class="font-bold text-slate-800">${p.name}</h4>`;
+            cardsContainer.appendChild(card);
+        });
+        
+        cardsContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.persona-card');
+            if(card) {
+                const personaId = card.dataset.id;
+                const personaData = data.personas.find(p => p.id === personaId);
+                if(personaData) {
+                    updatePersonaDetails(personaData);
+                    updatePersonaChart(personaData);
+                }
+            }
+        });
+
+        const ctx = document.getElementById('personaFocusChart').getContext('2d');
+        personaChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['ファッション性', '楽しさ・雰囲気', '食事・施設', 'スコア・戦略性'],
+                datasets: [{
+                    label: '評価軸',
+                    data: [0,0,0,0],
+                    backgroundColor: '#fcd34d',
+                    borderColor: '#f59e0b',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'ペルソナを選択して比較'
+                    }
+                }
+            }
+        });
+        window.personaInitialized = true;
+    }
+
+    function updatePersonaDetails(persona) {
+        document.getElementById('persona-detail-title').textContent = `${persona.emoji} ${persona.name}`;
+        document.getElementById('persona-detail-description').textContent = persona.description;
+    }
+
+    function updatePersonaChart(persona) {
+        personaChart.data.datasets[0].data = persona.focus;
+        personaChart.options.plugins.title.text = `${persona.name}の評価軸`;
+        personaChart.update();
+    }
+    
+    function initBuilder() {
+        const buttons = document.querySelectorAll('#script-theme-buttons button');
+        const output = document.getElementById('script-output');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const theme = button.dataset.theme;
+                const scriptData = data.scripts[theme];
+                renderScript(scriptData);
+            });
+        });
+        window.builderInitialized = true;
+    }
+
+    function renderScript(script) {
+        const output = document.getElementById('script-output');
+        let html = `<h3 class="text-xl font-bold text-slate-800 mb-6">${script.title}</h3>`;
+        html += '<div class="space-y-4">';
+        
+        script.steps.forEach(step => {
+            const key = Object.keys(step).find(k => k !== 'time');
+            const value = step[key];
+            
+            html += `
+                <div class="p-4 border-l-4 border-amber-400 bg-slate-50 rounded-r-lg">
+                    <p class="text-sm font-bold text-amber-700">${step.time}：${key.charAt(0).toUpperCase() + key.slice(1)}</p>
+                    <p class="mt-2 text-slate-800 font-medium"><strong>フック/テロップ:</strong> ${value}</p>
+                    <p class="mt-1 text-sm text-slate-600"><strong>映像イメージ:</strong> ${step.visual}</p>
+                    <p class="mt-1 text-sm text-slate-600"><strong>音声イメージ:</strong> ${step.audio}</p>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        output.innerHTML = html;
+    }
+
+    // Initial load
+    updateView();
+});
+</script>
+
+</body>
+</html>
