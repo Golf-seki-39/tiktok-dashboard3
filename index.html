@@ -82,7 +82,7 @@
             <section id="home" class="content-section">
                 <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">ようこそ、未来のゴルフインフルエンサーへ</h2>
-                    <p class="mb-4">このダッシュボードは、あなたのゴルフ施設レビュー動画を「バズる」コンテンツへと昇華させるための戦略拠点です。TikTokでは、単に良い施設を紹介するだけでは不十分です。視聴者の心を一瞬で掴み、共感を呼び、そしてあなた自身のファンになってもらうための「設計図」が必要です。上のナビゲーションから各戦略を探求し、1万再生の壁を突破しましょう。</p>
+                    <p class="mb-4">このダッシュボードは、あなたのゴルフ動画を「バズる」コンテンツへと昇華させるための戦略拠点です。TikTokでは、単に良い施設を紹介するだけでは不十分です。視聴者の心を一瞬で掴み、共感を呼び、そしてあなた自身のファンになってもらうための「設計図」が必要です。上のナビゲーションから各戦略を探求し、1万再生の壁を突破しましょう。</p>
                 </div>
                 <div class="grid md:grid-cols-2 gap-8 items-center">
                     <div class="bg-white p-6 rounded-lg shadow-sm">
@@ -93,18 +93,24 @@
                         </div>
                     </div>
                     <div class="space-y-4">
-                        <div class="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 class="font-bold text-lg text-slate-800 mb-2">📈 バイラル戦略</h3>
-                            <p class="text-slate-600 text-sm">最初の3秒で視聴者の指を止めさせ、アルゴリズムに愛されるためのテクニックを学びます。</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 class="font-bold text-lg text-slate-800 mb-2">🎬 コンテンツ制作</h3>
-                            <p class="text-slate-600 text-sm">視聴者が感情移入する「物語」の作り方と、プロ級の映像をスマホで撮影する技術を解説します。</p>
-                        </div>
-                         <div class="bg-white p-6 rounded-lg shadow-sm">
-                            <h3 class="font-bold text-lg text-slate-800 mb-2">🎭 ペルソナ設計</h3>
-                            <p class="text-slate-600 text-sm">「誰が」発信するかが重要な時代。ファンを魅了する一貫したキャラクター設定の方法を探ります。</p>
-                        </div>
+                        <a href="#viral" class="card-link block hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                            <div class="bg-white p-6 rounded-lg shadow-sm h-full">
+                                <h3 class="font-bold text-lg text-slate-800 mb-2">📈 バイラル戦略</h3>
+                                <p class="text-slate-600 text-sm">最初の3秒で視聴者の指を止めさせ、アルゴリズムに愛されるためのテクニックを学びます。</p>
+                            </div>
+                        </a>
+                        <a href="#content" class="card-link block hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                            <div class="bg-white p-6 rounded-lg shadow-sm h-full">
+                                <h3 class="font-bold text-lg text-slate-800 mb-2">🎬 コンテンツ制作</h3>
+                                <p class="text-slate-600 text-sm">視聴者が感情移入する「物語」の作り方と、プロ級の映像をスマホで撮影する技術を解説します。</p>
+                            </div>
+                        </a>
+                         <a href="#persona" class="card-link block hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                            <div class="bg-white p-6 rounded-lg shadow-sm h-full">
+                                <h3 class="font-bold text-lg text-slate-800 mb-2">🎭 ペルソナ設計</h3>
+                                <p class="text-slate-600 text-sm">「誰が」発信するかが重要な時代。ファンを魅了する一貫したキャラクター設定の方法を探ります。</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -359,14 +365,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeHash === '#builder' && !window.builderInitialized) initBuilder();
     }
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const hash = e.target.getAttribute('href');
-            history.pushState(null, null, hash);
-            updateView(hash);
+    function addNavigationHandlers(selector) {
+        const links = document.querySelectorAll(selector);
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const hash = e.currentTarget.getAttribute('href');
+                history.pushState(null, null, hash);
+                updateView(hash);
+            });
         });
-    });
+    }
+
+    addNavigationHandlers('.nav-link');
+    addNavigationHandlers('.card-link');
+
 
     window.addEventListener('popstate', () => updateView());
 
@@ -552,4 +565,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 </body>
-</html>
+</ht
