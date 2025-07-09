@@ -231,9 +231,17 @@
                     <div>
                         <h3 class="font-bold text-slate-700 mb-2">🏌️‍♂️ ゴルフ練習場編</h3>
                          <div class="flex flex-wrap gap-2">
+                            <button type="button" data-theme="range_review" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">⭐ 練習場レビュー</button>
                             <button type="button" data-theme="indoor" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">🤖 最新インドア</button>
-                            <button type="button" data-theme="challenge" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">🎯 課題克服ガチ練習</button>
-                            <button type="button" data-theme="approach" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">⛳ アプローチ集中特訓</button>
+                            <button type="button" data-theme="challenge" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">🎯 課題克服</button>
+                            <button type="button" data-theme="approach" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">⛳ アプローチ特訓</button>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="font-bold text-slate-700 mb-2">専門テーマ編</h3>
+                         <div class="flex flex-wrap gap-2">
+                            <button type="button" data-theme="ootd" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">👚 ゴルフウェアコーデ</button>
+                            <button type="button" data-theme="lesson" class="tab-button px-4 py-2 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 focus:z-10 focus:ring-2 focus:ring-amber-500">💡 ワンポイントレッスン</button>
                         </div>
                     </div>
                 </div>
@@ -303,6 +311,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     { time: "56-60秒", structure: "結び", caption: {default: "[ゴルフ場名]<br>ランチ評価：★★★★★<br>コメントで待ってます！"}, visual: "ランチ評価を星5段階で表示。", narration: {default: "ナレーション「ここのランチのためだけに来る価値アリ！皆さんの“ゴルフ飯”おすすめ、ぜひ教えてください！」"} }
                 ]
             },
+            range_review: {
+                title: "台本：ゴルフ練習場レビュー編",
+                steps: [
+                    { time: "0-3秒", structure: "フック", caption: {default: "意外と知らない練習場選びのポイント3選"}, visual: "練習場の受付や外観を映す。", narration: {default: "（アップテンポなBGM）"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "今日は[練習場名]を正直レビュー！"}, visual: "打席に立ち、広々としたフェアウェイを見渡す。", narration: {default: "ナレーション「練習場ってどこも同じだと思ってない？今日は[地域名]の[練習場名]を徹底レビューします！」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "ポイント①：ボールが綺麗！", beginner: "ボールが綺麗だとテンション上がる！"}, visual: "ボール貸出機から出てくる綺麗なボールのアップ。実際に打席でボールを並べる。", narration: {default: "ナレーション「まずボール！ここのはコースボール並みに綺麗だから、本番に近い感覚で練習できます。」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "ポイント②：アプローチ練習場が充実！"}, visual: "アプローチ練習場やバンカーで練習している様子。", narration: {default: "ナレーション「そして、このアプローチ練習場が最高。天然芝から打てるし、バンカーもあるからスコアアップに直結します。」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "ポイント③：コスパ最強！打ち放題[〇〇円]"}, visual: "料金表や、お得なプランの看板をアップで映す。", narration: {default: "ナレーション「これだけ施設が充実してるのに、料金も良心的。初心者から上級者までおすすめできる練習場です！」"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "[練習場名]<br>総合評価：★★★★☆<br>みんなのホーム練習場は？"}, visual: "練習場のロゴや看板をバックに、満足げな表情で頷く。", narration: {default: "ナレーション「みんながよく行く練習場も、ぜひコメントで教えてね！」"} }
+                ]
+            },
             indoor: {
                 title: "台本：最新鋭インドア練習場編",
                 steps: [
@@ -334,6 +353,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     { time: "31-45秒", structure: "深掘り②", caption: {default: "58°(上げる) vs 52°(転がす)"}, visual: "違う番手（52度と58度など）で打ち比べ、弾道の高さやランの違いを見せる。", narration: {default: "ナレーション「58度だとフワッと上がる。52度だと転がってくれる。この使い分けが大事。」"} },
                     { time: "46-55秒", structure: "クライマックス", caption: {default: "この地味な練習が、自信になる。"}, visual: "練習の成果として、連続でピンの近くにボールが寄っていく様子をテンポよく見せる。", narration: {default: "（BGMのビートに合わせて）"} },
                     { time: "56-60秒", structure: "結び", caption: {default: "結論：アプローチは振り幅が9割<br>コメントで教えて！"}, visual: "今日の練習のポイントを一行でまとめる。", narration: {default: "ナレーション「これで本番も怖くない！みんなの得意な番手は何ですか？」", gachi: "ナレーション「状況によって使い分けるのがスコアメイクの鍵。あなたの得意なウェッジは？」"} }
+                ]
+            },
+            ootd: {
+                title: "台本：ゴルフウェアコーデ(OOTD)編",
+                steps: [
+                    { time: "0-3秒", structure: "フック", caption: {default: "ゴルフ場で3秒で可愛くなる方法"}, visual: "私服姿から、ゴルフウェア姿へ一瞬で切り替わるトランジション（ジャンプやターンなど）。", narration: {default: "（リズミカルなトレンド音源）"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "今日のコーデのポイントは「[コーデのテーマ]」"}, visual: "クラブハウス前や綺麗な景色をバックに、全身コーデを見せる。ゆっくり一回転する。", narration: {default: "ナレーション「今日のゴルフウェアはこんな感じ！テーマは[大人可愛い]です。」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "トップス：[ブランド名]", joshi: "このパフスリーブが可愛くない？"}, visual: "トップスのアップ。ロゴやデザインのディテールを見せる。", narration: {default: "ナレーション「トップスは[ブランド名]。この[デザインの特徴]がお気に入り。」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "スカート：[ブランド名]", joshi: "スタイル良く見える魔法のスカート！"}, visual: "スカート（またはパンツ）とシューズのアップ。全体のバランスを見せる。", narration: {default: "ナレーション「スカートは[ブランド名]で、シルエットが綺麗に見えるから好き。小物は白で統一しました。」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "お気に入りのウェアで気分も上がる！"}, visual: "実際にスイングする様子。ウェアが機能的であることもさりげなくアピール。", narration: {default: "ナレーション「可愛いだけじゃなくて、動きやすいからスコアも良くなる…かも？笑」"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "今日のコーデ、どうかな？<br>コメントで教えて！"}, visual: "最後にポーズを決めて、笑顔で手を振る。", narration: {default: "（音楽のみ）"} }
+                ]
+            },
+            lesson: {
+                title: "台本：ワンポイントレッスン編",
+                steps: [
+                    { time: "0-3秒", structure: "フック", caption: {default: "そのスライス、〇〇が原因かも。"}, visual: "ひどいスライスショットの映像。", narration: {default: "（インパクトのある効果音）"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "1分でわかる！スライスしない構え方"}, visual: "カメラに向かって「今日はスライスを直す簡単な方法を教えます！」と話す。", narration: {default: "ナレーション「多くの人が悩むスライス。実は、構え方一つで劇的に改善するかもしれません。」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "【NG例】ボールが右足寄りすぎる"}, visual: "悪い例として、ボールを右足寄りに置いて構える様子を見せる。", narration: {default: "ナレーション「よくあるのが、ボールの位置が右足に寄りすぎているケース。これだと、クラブが外から入りやすくなります。」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "【OK例】ボールは左足かかと線上に"}, visual: "正しい例として、ボールを左足かかと線上に置いて構える様子を見せる。上から見た図などをインサートしても良い。", narration: {default: "ナレーション「正解は、ドライバーの場合、左足のかかと線上が基本。たったこれだけで、クラブがインサイドから下りやすくなります。」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "NG例 → OK例"}, visual: "悪い構え方で打ったスライス弾道と、良い構え方で打ったストレート弾道を比較して見せる。", narration: {default: "ナレーション「見てください。構え方を変えただけで、こんなに弾道が変わります。」"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "騙されたと思って試してみて！<br>保存して見返そう！"}, visual: "レッスンのポイントをまとめたテロップを表示。", narration: {default: "ナレーション「他にも知りたいことがあったら、コメントで教えてくださいね！」"} }
                 ]
             }
         }
@@ -565,4 +606,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 </body>
-</ht
+</html>
