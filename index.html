@@ -50,6 +50,11 @@
             color: white;
             border-color: #f59e0b;
         }
+        .persona-card.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px #f59e0b;
+            border-color: #f59e0b;
+        }
     </style>
 </head>
 <body class="text-slate-700">
@@ -188,7 +193,7 @@
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <div id="persona-cards" class="grid grid-cols-2 gap-4"></div>
-                        <div id="persona-details" class="mt-4 bg-white p-6 rounded-lg shadow-inner border border-slate-200">
+                        <div id="persona-details" class="mt-4 bg-white p-6 rounded-lg shadow-inner border border-slate-200 min-h-[120px]">
                             <h3 id="persona-detail-title" class="font-bold text-lg text-slate-800 mb-2">ペルソナを選択してください</h3>
                             <p id="persona-detail-description" class="text-sm text-slate-600">各ペルソナの詳しい説明と、レビューで重視すべきポイントが表示されます。</p>
                         </div>
@@ -206,7 +211,7 @@
             <section id="builder" class="content-section">
                 <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
                     <h2 class="text-2xl font-bold text-slate-800 mb-4">インタラクティブ台本ビルダー</h2>
-                    <p class="mb-4">ここまでの学びを活かして、あなただけの動画台本の骨子を作成しましょう。作りたい動画のテーマを選ぶと、成功パターンに基づいた台本のテンプレートが自動生成されます。</p>
+                    <p class="mb-4">ここまでの学びを活かして、あなただけの動画台本の骨子を作成しましょう。作りたい動画のテーマを選ぶと、成功パターンに基づいた台本のテンプレートが自動生成されます。<strong class="text-amber-600">（ヒント：ペルソナ設計でキャラクターを選ぶと内容が変わります！）</strong></p>
                 </div>
                 <div class="space-y-6">
                     <div>
@@ -239,6 +244,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
+    let selectedPersonaId = null;
+    let activeScriptTheme = null;
+
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.content-section');
 
@@ -259,67 +267,67 @@ document.addEventListener('DOMContentLoaded', () => {
             resort: {
                 title: "台本：憧れの絶景リゾート編",
                 steps: [
-                    { time: "0-3秒", structure: "フック", caption: "【絶景すぎ注意】ここは本当に日本…？", visual: "高台からコースを見下ろす壮大なワイドショット（スローモーション）。", audio: "（BGMのみ）" },
-                    { time: "4-15秒", structure: "展開", caption: "まるで海外リゾート / 練習場からこの景色は反則…", visual: "クラブハウスに歩いて入るFPV。練習場で青空に吸い込まれるボール。", audio: "ナレーション「今回は、ずっと来たかった天空のリゾート、[ゴルフ場名]へ。」" },
-                    { time: "16-30秒", structure: "深掘り①", caption: "人生最高のショット出たかも！", visual: "名物ホールでのティーショット。スローモーションを使い、美しいスイングを見せる。", audio: "ナレーション「名物の[〇番]ホール。この景色に向かって打つのは最高に気持ちいい！」" },
-                    { time: "31-45秒", structure: "深掘り②", caption: "ゴルフ場のランチレベルじゃない", visual: "レストランでのランチ。料理のアップ映像や、美味しそうに食べる自分の表情を撮る。", audio: "ナレーション「プレー後のランチも格別。[メニュー名]、とろけました…」" },
-                    { time: "46-55秒", structure: "クライマックス", caption: "一日中、夢見心地でした。", visual: "夕日に染まるコースを背景に、満足げな表情で佇む。", audio: "（BGMのサビに合わせる）" },
-                    { time: "56-60秒", structure: "結び", caption: "[ゴルフ場名]<br>料金目安: [約〇〇円]<br>コメントで教えて！", visual: "笑顔でカメラに手を振る。", audio: "ナレーション「特別な一日を過ごしたい人におすすめ！みんなの憧れのゴルフ場も教えてね！」" }
+                    { time: "0-3秒", structure: "フック", caption: {default: "【絶景すぎ注意】ここは本当に日本…？"}, visual: "高台からコースを見下ろす壮大なワイドショット（スローモーション）。", narration: {default: "（BGMのみ）"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "まるで海外リゾート / 練習場からこの景色は反則…"}, visual: "クラブハウスに歩いて入るFPV。練習場で青空に吸い込まれるボール。", narration: {default: "ナレーション「今回は、ずっと来たかった天空のリゾート、[ゴルフ場名]へ。」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "人生最高のショット出たかも！", joshi: "今日のウェア、この景色にぴったりじゃない？"}, visual: "名物ホールでのティーショット。スローモーションを使い、美しいスイングを見せる。", narration: {default: "ナレーション「名物の[〇番]ホール。この景色に向かって打つのは最高に気持ちいい！」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "ゴルフ場のランチレベルじゃない"}, visual: "レストランでのランチ。料理のアップ映像や、美味しそうに食べる自分の表情を撮る。", narration: {default: "ナレーション「プレー後のランチも格別。[メニュー名]、とろけました…」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "一日中、夢見心地でした。", enjoy: "スコアは忘れて、ただただ最高！"}, visual: "夕日に染まるコースを背景に、満足げな表情で佇む。", narration: {default: "（BGMのサビに合わせる）"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "[ゴルフ場名]<br>料金目安: [約〇〇円]<br>コメントで教えて！"}, visual: "笑顔でカメラに手を振る。", narration: {default: "ナレーション「特別な一日を過ごしたい人におすすめ！みんなの憧れのゴルフ場も教えてね！」", joshi: "ナレーション「今日のウェアも映える最高のロケーションでした！みんなのおすすめ映えコースも教えて！」", gachi: "ナレーション「景色も最高だけど、グリーンが速くて面白いコースでした。腕試ししたい人はぜひ！あなたのベストコースはどこ？」", beginner: "ナレーション「いつかこんな素敵なコースで100切りしたいな。皆さんの思い出のコース、教えてください！」", enjoy: "ナレーション「スコアはともかく(笑)、最高の思い出になりました！みんなが一番楽しかったゴルフ場、教えて！」"} }
                 ]
             },
             competitive: {
                 title: "台本：共感のガチラウンド編",
                 steps: [
-                    { time: "0-3秒", structure: "フック", caption: "【悲報】今日、終わりました。", visual: "深いバンカーや林の中など、トラブルショットの場面から始める。頭を抱える。", audio: "（音声）「うわ、最悪だ…」" },
-                    { time: "4-15秒", structure: "展開", caption: "目標：[〇〇切り！] / プレッシャーがヤバい", visual: "朝のクラブハウス前で意気込む姿。「今日は[ゴルフ場名]！自己ベスト更新目指します！」", audio: "ナレーション「…のはずだった。ここは噂に聞く超戦略的コース。」" },
-                    { time: "16-30秒", structure: "深掘り①", caption: "完璧！これだからゴルフはやめられない！", visual: "会心のナイスショット。力強いフィニッシュをスローで見せる。ガッツポーズも忘れずに。", audio: "ナレーション「でも、こういう難しいホールを攻略できた時の快感がたまらない！」" },
-                    { time: "31-45秒", structure: "深掘り②", caption: "これが現実。泣", visual: "再び、冒頭のトラブルシーン。「名物のアリ地獄バンカー。聞いてはいたけど本当にエグい…」", audio: "ナレーション「結局このホール、[叩いた数]でした。これが現実…」" },
-                    { time: "46-55秒", structure: "クライマックス", caption: "悔しい！でも、楽しかった！", visual: "ラウンド後の練習グリーンで黙々とパター練習。またはスコアカードを映す。", audio: "ナレーション「結果は[スコア]。目標には届かなかったけど、リベンジを誓います。」" },
-                    { time: "56-60秒", structure: "結び", caption: "[ゴルフ場名]<br>上級者向け<br>コメントで教えて！", visual: "コースに向かって一礼。「絶対また来る！」と宣言する。", audio: "ナレーション「腕試ししたい人には最高のコースです。皆さんの苦手なコース、ありますか？」" }
+                    { time: "0-3秒", structure: "フック", caption: {default: "【悲報】今日、終わりました。"}, visual: "深いバンカーや林の中など、トラブルショットの場面から始める。頭を抱える。", narration: {default: "（音声）「うわ、最悪だ…」"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "目標：[〇〇切り！] / プレッシャーがヤバい"}, visual: "朝のクラブハウス前で意気込む姿。「今日は[ゴルフ場名]！自己ベスト更新目指します！」", narration: {default: "ナレーション「…のはずだった。ここは噂に聞く超戦略的コース。」", gachi: "ナレーション「今日の目標は[85切り]！ここのグリーンは速いから集中しないと…」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "完璧！これだからゴルフはやめられない！"}, visual: "会心のナイスショット。力強いフィニッシュをスローで見せる。ガッツポーズも忘れずに。", narration: {default: "ナレーション「でも、こういう難しいホールを攻略できた時の快感がたまらない！」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "これが現実。泣", beginner: "ゴルフ、むずかしい…（泣）"}, visual: "再び、冒頭のトラブルシーン。「名物のアリ地獄バンカー。聞いてはいたけど本当にエグい…」", narration: {default: "ナレーション「結局このホール、[叩いた数]でした。これが現実…」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "悔しい！でも、楽しかった！", gachi: "この悔しさが、次へのモチベーション。"}, visual: "ラウンド後の練習グリーンで黙々とパター練習。またはスコアカードを映す。", narration: {default: "ナレーション「結果は[スコア]。目標には届かなかったけど、リベンジを誓います。」"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "[ゴルフ場名]<br>上級者向け<br>コメントで教えて！"}, visual: "コースに向かって一礼。「絶対また来る！」と宣言する。", narration: {default: "ナレーション「腕試ししたい人には最高のコースです。皆さんの苦手なコース、ありますか？」", beginner: "ナレーション「もっと練習して、絶対リベンジします！皆さんが苦戦したコースも教えてください！」"} }
                 ]
             },
             gourmet: {
                 title: "台本：発見のテーマ特化編（ゴルフ飯）",
                 steps: [
-                    { time: "0-3秒", structure: "フック", caption: "ここ、ゴルフ場です。信じられる？", visual: "最も美味しそうな料理のドアップ映像。", audio: "（効果音）ジュージュー、グツグツといったシズル音。" },
-                    { time: "4-15秒", structure: "展開", caption: "ゴルフ場ランチガチレビュー！", visual: "明るいレストラン内でメニューを広げ、悩む様子。", audio: "ナレーション「ゴルフの楽しみはプレーだけじゃない！今日はランチが神レベルと噂の[ゴルフ場名]へ！」" },
-                    { time: "16-30秒", structure: "深掘り①", caption: "名物①：[メニュー名①]<br>名物②：[メニュー名②]", visual: "注文した料理が運ばれてくるシーン。複数の名物料理をテンポよく見せる。", audio: "ナレーション「名物の[メニュー名①]と[メニュー名②]を注文！」" },
-                    { time: "31-45秒", structure: "深掘り②", caption: "うっっっま！", visual: "料理を一口食べ、満面の笑みで「おいしい！」とリアクションする様子を撮る。", audio: "ナレーション「このカツ、サクサクで分厚すぎ！」「出汁が効いてる〜！」" },
-                    { time: "46-55秒", structure: "クライマックス", caption: "個人的MVPは…[メニュー名]！", visual: "一番のおすすめメニューを指差して発表。", audio: "（効果音）ドラムロールからの「ジャジャン！」という音。" },
-                    { time: "56-60秒", structure: "結び", caption: "[ゴルフ場名]<br>ランチ評価：★★★★★<br>コメントで待ってます！", visual: "ランチ評価を星5段階で表示。", audio: "ナレーション「ここのランチのためだけに来る価値アリ！皆さんの“ゴルフ飯”おすすめ、ぜひ教えてください！」" }
+                    { time: "0-3秒", structure: "フック", caption: {default: "ここ、ゴルフ場です。信じられる？"}, visual: "最も美味しそうな料理のドアップ映像。", narration: {default: "（効果音）ジュージュー、グツグツといったシズル音。"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "ゴルフ場ランチガチレビュー！"}, visual: "明るいレストラン内でメニューを広げ、悩む様子。", narration: {default: "ナレーション「ゴルフの楽しみはプレーだけじゃない！今日はランチが神レベルと噂の[ゴルフ場名]へ！」", enjoy: "ナレーション「今日のメインイベント！ランチが美味しいと噂の[ゴルフ場名]に来ました！」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "名物①：[メニュー名①]<br>名物②：[メニュー名②]"}, visual: "注文した料理が運ばれてくるシーン。複数の名物料理をテンポよく見せる。", narration: {default: "ナレーション「名物の[メニュー名①]と[メニュー名②]を注文！」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "うっっっま！", joshi: "美味しすぎて、プレー後半も頑張れる！"}, visual: "料理を一口食べ、満面の笑みで「おいしい！」とリアクションする様子を撮る。", narration: {default: "ナレーション「このカツ、サクサクで分厚すぎ！」「出汁が効いてる〜！」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "個人的MVPは…[メニュー名]！"}, visual: "一番のおすすめメニューを指差して発表。", narration: {default: "（効果音）ドラムロールからの「ジャジャン！」という音。"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "[ゴルフ場名]<br>ランチ評価：★★★★★<br>コメントで待ってます！"}, visual: "ランチ評価を星5段階で表示。", narration: {default: "ナレーション「ここのランチのためだけに来る価値アリ！皆さんの“ゴルフ飯”おすすめ、ぜひ教えてください！」"} }
                 ]
             },
             indoor: {
                 title: "台本：最新鋭インドア練習場編",
                 steps: [
-                    { time: "0-3秒", structure: "フック", caption: "え、ここカフェじゃないの？", visual: "お洒落なラウンジやカフェスペースから撮影開始。", audio: "（BGMのみ、チル系の洋楽など）" },
-                    { time: "4-15秒", structure: "展開", caption: "未来のゴルフ練習がここに。", visual: "スタイリッシュな打席エリアへ移動。弾道測定器の画面を見せる。", audio: "ナレーション「今日は話題のインドアゴルフ、[練習場名]に潜入！」" },
-                    { time: "16-30秒", structure: "深掘り①", caption: "自分のスイング、知りたくない？", visual: "実際にショットを打ち、画面に表示される飛距離やスピン量などのデータを見せる。", audio: "ナレーション「自分のスイングが全部データ化されて丸裸に…これは面白い！」" },
-                    { time: "31-45秒", structure: "深掘り②", caption: "練習が、遊びに変わる。", visual: "画面を操作し、有名コースをラウンドするモードや、ミニゲームで遊ぶ様子を見せる。", audio: "ナレーション「ただ打つだけじゃない。[コース名]をラウンドしたり、ゲーム感覚で練習できる！」" },
-                    { time: "46-55秒", structure: "クライマックス", caption: "通い続けたら、絶対上手くなる。", visual: "練習の成果が出た会心のショット。データ画面で「ナイスショット！」と表示される。", audio: "（BGMの盛り上がりに合わせる）" },
-                    { time: "56-60秒", structure: "結び", caption: "[練習場名]<br>料金目安: [〇〇円/時間]<br>コメントで教えて！", visual: "施設の名前、料金体系などを表示。", audio: "ナレーション「手ぶらで来れるし、初心者にも優しい！みんなのオススメ練習場も教えて！」" }
+                    { time: "0-3秒", structure: "フック", caption: {default: "え、ここカフェじゃないの？", joshi: "お洒落すぎて練習着で来るか迷った…"}, visual: "お洒落なラウンジやカフェスペースから撮影開始。", narration: {default: "（BGMのみ、チル系の洋楽など）"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "未来のゴルフ練習がここに。"}, visual: "スタイリッシュな打席エリアへ移動。弾道測定器の画面を見せる。", narration: {default: "ナレーション「今日は話題のインドアゴルフ、[練習場名]に潜入！」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "自分のスイング、知りたくない？", gachi: "データは嘘をつかない。"}, visual: "実際にショットを打ち、画面に表示される飛距離やスピン量などのデータを見せる。", narration: {default: "ナレーション「自分のスイングが全部データ化されて丸裸に…これは面白い！」", beginner: "ナレーション「自分の球がどうなってるか分かるから、初心者こそ嬉しいかも！」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "練習が、遊びに変わる。"}, visual: "画面を操作し、有名コースをラウンドするモードや、ミニゲームで遊ぶ様子を見せる。", narration: {default: "ナレーション「ただ打つだけじゃない。[コース名]をラウンドしたり、ゲーム感覚で練習できる！」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "通い続けたら、絶対上手くなる。"}, visual: "練習の成果が出た会心のショット。データ画面で「ナイスショット！」と表示される。", narration: {default: "（BGMの盛り上がりに合わせる）"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "[練習場名]<br>料金目安: [〇〇円/時間]<br>コメントで教えて！"}, visual: "施設の名前、料金体系などを表示。", narration: {default: "ナレーション「手ぶらで来れるし、初心者にも優しい！みんなのオススメ練習場も教えて！」"} }
                 ]
             },
             challenge: {
                 title: "台本：課題克服ガチ練習編",
                 steps: [
-                    { time: "0-3秒", structure: "フック", caption: "【閲覧注意】今日のひどいスライス", visual: "ひどいミスショット（スライス、トップなど）をスローモーションで見せる。", audio: "（音声）「あー、またやった…」" },
-                    { time: "4-15秒", structure: "展開", caption: "今日の課題：スライス撲滅", visual: "「今日はこのスライスを絶対直す！」と宣言。練習器具を取り出す、またはスマホでスイングチェック。", audio: "ナレーション「今日のテーマは『[今日の練習テーマ]』。秘密兵器も持ってきました。」" },
-                    { time: "16-30秒", structure: "深掘り①", caption: "意識するのは「右肩を下げない」", visual: "課題克服のための練習ドリルを実践。意識するポイントなどをテロップで解説。", audio: "ナレーション「意識するのはたった一つ、[意識するポイント]だけ。これでどうだ…？」" },
-                    { time: "31-45秒", structure: "深掘り②", caption: "一進一退。でも、それが練習。", visual: "なかなか上手くいかない様子。少し上手くいったショットと、まだ出るミスショットを交互に見せる。", audio: "ナレーション「んー、まだちょっと右に行くか…。ゴルフ、そんなに甘くない。」" },
-                    { time: "46-55秒", structure: "クライマックス", caption: "キタ！この感覚！忘れないようにしないと！", visual: "最後に、まっすぐ飛んでいく理想的なショット。自分のスイングをスローで確認し、納得の表情。", audio: "（効果音）「ピシッ！」という快音。" },
-                    { time: "56-60秒", structure: "結び", caption: "今日の学び：[学んだこと]<br>コメントでアドバイス求む！", visual: "練習ドリルのポイントを再度おさらい。", audio: "ナレーション「地道な練習が大事ですね。皆さんのスライス克服法も、ぜひコメントで教えてください！」" }
+                    { time: "0-3秒", structure: "フック", caption: {default: "【閲覧注意】今日のひどいスライス"}, visual: "ひどいミスショット（スライス、トップなど）をスローモーションで見せる。", narration: {default: "（音声）「あー、またやった…」"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "今日の課題：スライス撲滅"}, visual: "「今日はこのスライスを絶対直す！」と宣言。練習器具を取り出す、またはスマホでスイングチェック。", narration: {default: "ナレーション「今日のテーマは『[今日の練習テーマ]』。秘密兵器も持ってきました。」", beginner: "ナレーション「永遠の課題、『スライス』を今日こそ克服したい…！」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "意識するのは「右肩を下げない」"}, visual: "課題克服のための練習ドリルを実践。意識するポイントなどをテロップで解説。", narration: {default: "ナレーション「意識するのはたった一つ、[意識するポイント]だけ。これでどうだ…？」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "一進一退。でも、それが練習。"}, visual: "なかなか上手くいかない様子。少し上手くいったショットと、まだ出るミスショットを交互に見せる。", narration: {default: "ナレーション「んー、まだちょっと右に行くか…。ゴルフ、そんなに甘くない。」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "キタ！この感覚！忘れないようにしないと！", gachi: "この一球のために、何百球でも打てる。"}, visual: "最後に、まっすぐ飛んでいく理想的なショット。自分のスイングをスローで確認し、納得の表情。", narration: {default: "（効果音）「ピシッ！」という快音。"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "今日の学び：[学んだこと]<br>コメントでアドバイス求む！"}, visual: "練習ドリルのポイントを再度おさらい。", narration: {default: "ナレーション「地道な練習が大事ですね。皆さんのスライス克服法も、ぜひコメントで教えてください！」"} }
                 ]
             },
             approach: {
                 title: "台本：アプローチ集中特訓編",
                 steps: [
-                    { time: "0-3秒", structure: "フック", caption: "アプローチでコレやる人、正直に手ぇ挙げて", visual: "アプローチでトップしてグリーンを遥かにオーバーする映像。「あるある」な失敗から入る。", audio: "（音声）「あっちゃー！」" },
-                    { time: "4-15秒", structure: "展開", caption: "スコアは寄せで決まる！", visual: "練習場のアプローチエリアに移動。「今日はスコアの要、アプローチを徹底的に練習します！」", audio: "ナレーション「お世話になるのは[練習場名]の天然芝アプローチエリア。最高です。」" },
-                    { time: "16-30秒", structure: "深掘り①", caption: "練習法①：時計の針ドリル", visual: "具体的な練習法を実践。例：「30ヤードの看板だけを狙う」「落としどころにタオルを置く」など。", audio: "ナレーション「今日のテーマは『振り幅』。時計の8時から4時を意識して…」" },
-                    { time: "31-45秒", structure: "深掘り②", caption: "58°(上げる) vs 52°(転がす)", visual: "違う番手（52度と58度など）で打ち比べ、弾道の高さやランの違いを見せる。", audio: "ナレーション「58度だとフワッと上がる。52度だと転がってくれる。この使い分けが大事。」" },
-                    { time: "46-55秒", structure: "クライマックス", caption: "この地味な練習が、自信になる。", visual: "練習の成果として、連続でピンの近くにボールが寄っていく様子をテンポよく見せる。", audio: "（BGMのビートに合わせて）" },
-                    { time: "56-60秒", structure: "結び", caption: "結論：アプローチは振り幅が9割<br>コメントで教えて！", visual: "今日の練習のポイントを一行でまとめる。", audio: "ナレーション「これで本番も怖くない！みんなの得意な番手は何ですか？」" }
+                    { time: "0-3秒", structure: "フック", caption: {default: "アプローチでコレやる人、正直に手ぇ挙げて"}, visual: "アプローチでトップしてグリーンを遥かにオーバーする映像。「あるある」な失敗から入る。", narration: {default: "（音声）「あっちゃー！」"} },
+                    { time: "4-15秒", structure: "展開", caption: {default: "スコアは寄せで決まる！", beginner: "100切りには、アプローチが大事って言うけど…"}, visual: "練習場のアプローチエリアに移動。「今日はスコアの要、アプローチを徹底的に練習します！」", narration: {default: "ナレーション「お世話になるのは[練習場名]の天然芝アプローチエリア。最高です。」"} },
+                    { time: "16-30秒", structure: "深掘り①", caption: {default: "練習法①：時計の針ドリル"}, visual: "具体的な練習法を実践。例：「30ヤードの看板だけを狙う」「落としどころにタオルを置く」など。", narration: {default: "ナレーション「今日のテーマは『振り幅』。時計の8時から4時を意識して…」"} },
+                    { time: "31-45秒", structure: "深掘り②", caption: {default: "58°(上げる) vs 52°(転がす)"}, visual: "違う番手（52度と58度など）で打ち比べ、弾道の高さやランの違いを見せる。", narration: {default: "ナレーション「58度だとフワッと上がる。52度だと転がってくれる。この使い分けが大事。」"} },
+                    { time: "46-55秒", structure: "クライマックス", caption: {default: "この地味な練習が、自信になる。"}, visual: "練習の成果として、連続でピンの近くにボールが寄っていく様子をテンポよく見せる。", narration: {default: "（BGMのビートに合わせて）"} },
+                    { time: "56-60秒", structure: "結び", caption: {default: "結論：アプローチは振り幅が9割<br>コメントで教えて！"}, visual: "今日の練習のポイントを一行でまとめる。", narration: {default: "ナレーション「これで本番も怖くない！みんなの得意な番手は何ですか？」", gachi: "ナレーション「状況によって使い分けるのがスコアメイクの鍵。あなたの得意なウェッジは？」"} }
                 ]
             }
         }
@@ -444,11 +452,18 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsContainer.addEventListener('click', (e) => {
             const card = e.target.closest('.persona-card');
             if(card) {
+                document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+
                 const personaId = card.dataset.id;
+                selectedPersonaId = personaId;
                 const personaData = data.personas.find(p => p.id === personaId);
                 if(personaData) {
-                    updatePersonaDetails(personaData);
+                    updatePersonaDetails(personaData, true);
                     updatePersonaChart(personaData);
+                    if(activeScriptTheme) {
+                       renderScript(data.scripts[activeScriptTheme]);
+                    }
                 }
             }
         });
@@ -477,9 +492,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.personaInitialized = true;
     }
 
-    function updatePersonaDetails(persona) {
+    function updatePersonaDetails(persona, isSelected) {
         document.getElementById('persona-detail-title').textContent = `${persona.emoji} ${persona.name}`;
-        document.getElementById('persona-detail-description').textContent = persona.description;
+        let description = persona.description;
+        if(isSelected) {
+            description += '<br><span class="font-bold text-amber-600 mt-2 block">ペルソナを選択しました！台本ビルダーで変化を確認してみてください。</span>';
+        }
+        document.getElementById('persona-detail-description').innerHTML = description;
     }
 
     function updatePersonaChart(persona) {
@@ -497,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active');
                 
                 const theme = button.dataset.theme;
+                activeScriptTheme = theme;
                 const scriptData = data.scripts[theme];
                 renderScript(scriptData);
             });
@@ -510,12 +530,15 @@ document.addEventListener('DOMContentLoaded', () => {
         html += '<div class="space-y-4">';
         
         script.steps.forEach(step => {
+            const captionText = (selectedPersonaId && step.caption[selectedPersonaId]) ? step.caption[selectedPersonaId] : step.caption.default;
+            const narrationText = (selectedPersonaId && step.narration[selectedPersonaId]) ? step.narration[selectedPersonaId] : step.narration.default;
+
             html += `
                 <div class="p-4 border-l-4 border-amber-400 bg-slate-50 rounded-r-lg">
                     <p class="text-sm font-bold text-amber-700">${step.time}：${step.structure}</p>
-                    <p class="mt-2 text-slate-800 font-medium"><strong>テロップ案:</strong> ${step.caption}</p>
+                    <p class="mt-2 text-slate-800 font-medium"><strong>テロップ案:</strong> ${captionText}</p>
                     <p class="mt-1 text-sm text-slate-600"><strong>映像イメージ:</strong> ${step.visual}</p>
-                    <p class="mt-1 text-sm text-slate-600"><strong>ナレーション/音声:</strong> ${step.audio}</p>
+                    <p class="mt-1 text-sm text-slate-600"><strong>ナレーション/音声:</strong> ${narrationText}</p>
                 </div>
             `;
         });
